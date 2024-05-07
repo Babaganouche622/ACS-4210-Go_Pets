@@ -5,6 +5,7 @@ import (
 	"ACS-4210-Go_Pets/monster"
 	"ACS-4210-Go_Pets/pet"
 	"ACS-4210-Go_Pets/storage"
+	"ACS-4210-Go_Pets/weather"
 	"bufio"
 	"fmt"
 	"os"
@@ -19,6 +20,9 @@ func StartGame() {
 	var choice string
 	var petName string
 	var eggName string
+
+	// Display the weather
+	fmt.Println(weather.GetWeather())
 
 	reader := bufio.NewReader(os.Stdin)
 
@@ -134,19 +138,19 @@ func StartGame() {
 			fmt.Println(userPet.Feed() + "\n")
 		case "2":
 			if userPet.IsDirty() {
-				fmt.Println(userPet.Display("Happy"))
+				fmt.Println(userPet.DisplayStats("Happy"))
 			} else {
-				fmt.Println(userPet.Display("Angry"))
+				fmt.Println(userPet.DisplayStats("Angry"))
 			}
 			fmt.Println(userPet.Clean() + "\n")
 		case "3":
-			fmt.Println(userPet.Display("Happy"))
+			fmt.Println(userPet.DisplayStats("Happy"))
 			fmt.Println(userPet.Play() + "\n")
 		case "4":
 			if userPet.NeedsToPoop() {
-				fmt.Println(userPet.Display("Happy"))
+				fmt.Println(userPet.DisplayStats("Happy"))
 			} else {
-				fmt.Println(userPet.Display("Angry"))
+				fmt.Println(userPet.DisplayStats("Angry"))
 			}
 			fmt.Println(colour.Yellow + userPet.Poop() + "\n" + colour.Reset)
 		case "5":
@@ -166,6 +170,7 @@ func StartGame() {
 		time.Sleep(2 * time.Second)
 		// We should always check if the pet has died
 		if userPet.IsDead() {
+			fmt.Println(userPet.DisplayStats("Dead"))
 			fmt.Printf("%s has died.", userPet.Name)
 			os.Exit(0)
 		}

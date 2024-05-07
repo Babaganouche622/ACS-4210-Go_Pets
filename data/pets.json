@@ -1,39 +1,17 @@
 {
+  "Andrew": {
+    "Name": "Andrew",
+    "Happiness": 90,
+    "CurrentHealth": 25,
+    "MaxHealth": 100,
+    "Attack": 20,
+    "Dirty": 60,
+    "PoopState": 1,
+    "Hunger": 90,
+    "Age": 0
+  },
   "Bubbles": {
     "Name": "Bubbles",
-    "Happiness": 100,
-    "CurrentHealth": 75,
-    "MaxHealth": 100,
-    "Attack": 20,
-    "Dirty": 10,
-    "PoopState": 0,
-    "Hunger": 0,
-    "Age": 0
-  },
-  "Dumb Ass": {
-    "Name": "Dumb Ass",
-    "Happiness": 100,
-    "CurrentHealth": 100,
-    "MaxHealth": 100,
-    "Attack": 20,
-    "Dirty": 0,
-    "PoopState": 0,
-    "Hunger": 0,
-    "Age": 0
-  },
-  "Dumbo": {
-    "Name": "Dumbo",
-    "Happiness": 100,
-    "CurrentHealth": 100,
-    "MaxHealth": 100,
-    "Attack": 20,
-    "Dirty": 0,
-    "PoopState": 0,
-    "Hunger": 0,
-    "Age": 0
-  },
-  "Peepee": {
-    "Name": "Peepee",
     "Happiness": 100,
     "CurrentHealth": 100,
     "MaxHealth": 100,
