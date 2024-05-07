@@ -1,23 +1,27 @@
+// Package pet provides the Tamagotchi struct and its methods.
 package pet
 
 import (
 	"ACS-4210-Go_Pets/colour"
 	"ACS-4210-Go_Pets/monster"
+	"ACS-4210-Go_Pets/weather"
 	"fmt"
 )
 
+// Tamagotchi struct represents a Tamagotchi pet with various attributes.
 type Tamagotchi struct {
-	Name          string
-	Happiness     int // 0-100
-	CurrentHealth int
-	MaxHealth     int
-	Attack        int // 0-100
-	Dirty         int // 0-100
-	PoopState     int // 0-4
-	Hunger        int // 0-100
-	Age           int // 0-100
+	Name          string // Name of the Tamagotchi
+	Happiness     int    // Happiness level, 0-100
+	CurrentHealth int    // Current health level
+	MaxHealth     int    // Maximum health level
+	Attack        int    // Attack power, 0-100
+	Dirty         int    // Dirtiness level, 0-100
+	PoopState     int    // Poop state, 0-4
+	Hunger        int    // Hunger level, 0-100
+	Age           int    // Age, 0-100
 }
 
+// Constants for different Tamagotchi states.
 const (
 	Egg = `
      _______
@@ -70,20 +74,31 @@ const (
  `
 )
 
+// Feed method feeds the Tamagotchi, increasing its health and decreasing its hunger.
 func (t *Tamagotchi) Feed() string {
 	if !t.IsFull() {
 		t.CurrentHealth = t.MaxHealth
+		t.Hunger = 0
+		t.PoopState++
+		return fmt.Sprintf(colour.Yellow + "You fed " + t.Name + "!" + colour.Reset)
+	} else {
+		t.Happiness -= 10
+		return fmt.Sprintf(colour.Yellow + t.Name + " is already full." + colour.Reset)
 	}
-	t.Hunger = 0
-	t.PoopState++
-	return fmt.Sprintf(colour.Yellow + "You fed " + t.Name + "!" + colour.Reset)
 }
 
+// Clean method cleans the Tamagotchi, decreasing its dirtiness level.
 func (t *Tamagotchi) Clean() string {
-	t.Dirty = 0
-	return fmt.Sprintf(colour.Yellow+"%s is now clean."+colour.Reset, t.Name)
+	if t.IsDirty() {
+		t.Dirty = 0
+		return fmt.Sprintf(colour.Yellow+"%s is now clean."+colour.Reset, t.Name)
+	} else {
+		t.Happiness -= 10
+		return fmt.Sprintf(colour.Yellow+"%s is already clean."+colour.Reset, t.Name)
+	}
 }
 
+// Play method increases the Tamagotchi's happiness level.
 func (t *Tamagotchi) Play() string {
 	t.Happiness += 10
 	if t.Happiness > 100 {
@@ -92,19 +107,24 @@ func (t *Tamagotchi) Play() string {
 	return fmt.Sprintf(colour.Green+"%s played!"+colour.Reset, t.Name)
 }
 
+// Poop method handles the Tamagotchi's need to poop, decreasing its poop state and increasing its dirtiness level.
 func (t *Tamagotchi) Poop() string {
 	if t.NeedsToPoop() {
 		t.PoopState = 0
+		t.Dirty += 10
 		return fmt.Sprintf("%s pooped.", t.Name)
 	} else {
+		t.Happiness -= 10
 		return fmt.Sprintf("%s doesn't need to poop.", t.Name)
 	}
 }
 
+// TakeDamage method decreases the Tamagotchi's health by a certain amount.
 func (t *Tamagotchi) TakeDamage(damage int) {
 	t.CurrentHealth -= damage
 }
 
+// Battle method handles a battle between the Tamagotchi and a monster.
 func (t *Tamagotchi) Battle(monster monster.Monster) string {
 	if t.Hunger >= 100 {
 		return fmt.Sprintf("%s is too hungry to battle.", t.Name)
@@ -128,10 +148,12 @@ func (t *Tamagotchi) Battle(monster monster.Monster) string {
 	return fmt.Sprintf("%s has died.", monster.Name)
 }
 
+// IsDead method checks if the Tamagotchi's health has reached 0.
 func (t *Tamagotchi) IsDead() bool {
 	return t.CurrentHealth <= 0
 }
 
+// IncreaseHunger method increases the Tamagotchi's hunger by a certain amount.
 func (t *Tamagotchi) IncreaseHunger(amount int) {
 	t.Hunger += amount
 	if t.Hunger >= 100 {
@@ -140,6 +162,7 @@ func (t *Tamagotchi) IncreaseHunger(amount int) {
 	}
 }
 
+// DisplayStats method displays the Tamagotchi's current stats.
 func (t *Tamagotchi) DisplayStats(state string) string {
 	// List of Hunger states
 	hungerStates := []string{colour.Green + "Full" + colour.Reset, colour.Yellow + "Satisfied" + colour.Reset, colour.Orange + "Hungry" + colour.Reset, colour.Red + "Starving" + colour.Reset}
@@ -159,6 +182,7 @@ func (t *Tamagotchi) DisplayStats(state string) string {
 
 	return fmt.Sprintf(
 		"\033[H\033[2J"+
+			weather.GetWeather()+
 			colour.Blue+"Name: "+colour.Reset+colour.Purple+t.Name+colour.Reset+"\n"+
 			"%sHunger:%s %s %sPoop level:%s %s %sDirty level:%s %s %sHappiness:%s %s %sHealth:%s %d\n"+t.Display(state),
 		colour.Blue, colour.Reset, hungerState,
@@ -169,11 +193,7 @@ func (t *Tamagotchi) DisplayStats(state string) string {
 	)
 }
 
-// Based on state change text line to display mood of pet
-// Idle: <name of pet> is just chilling.
-// Angry: <name of pet> did not like that!
-// Dead: <name of pet> has died.
-// Happy: <name of pet> had a good time!
+// Display method displays the Tamagotchi's current state.
 func (t *Tamagotchi) Display(state string) string {
 	switch state {
 	case "Egg":
@@ -191,14 +211,17 @@ func (t *Tamagotchi) Display(state string) string {
 	}
 }
 
+// IsFull method checks if the Tamagotchi's hunger has reached 0.
 func (t *Tamagotchi) IsFull() bool {
 	return t.Hunger == 0
 }
 
+// IsDirty method checks if the Tamagotchi's dirtiness level has reached 50.
 func (t *Tamagotchi) IsDirty() bool {
 	return t.Dirty >= 50
 }
 
+// NeedsToPoop method checks if the Tamagotchi's poop state has reached 1.
 func (t *Tamagotchi) NeedsToPoop() bool {
 	return t.PoopState >= 1
 }
