@@ -5,11 +5,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 // LoadPetData loads pet data from JSON file
-func LoadPetData(filename string, petName string) (*pet.Tamagotchi, error) {
-	file, err := os.ReadFile(filename)
+func LoadPetData(petName string) (*pet.Tamagotchi, error) {
+	dataPath, err := getFilePath()
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.ReadFile(dataPath)
 	if err != nil {
 		return nil, err
 	}
@@ -28,8 +34,13 @@ func LoadPetData(filename string, petName string) (*pet.Tamagotchi, error) {
 	return petData, nil
 }
 
-func GetAllPetData(filename string) (map[string]pet.Tamagotchi, error) {
-	file, err := os.ReadFile(filename)
+func GetAllPetData() (map[string]pet.Tamagotchi, error) {
+	dataPath, err := getFilePath()
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.ReadFile(dataPath)
 	if err != nil {
 		return nil, err
 	}
@@ -43,10 +54,15 @@ func GetAllPetData(filename string) (map[string]pet.Tamagotchi, error) {
 }
 
 // SavePetData saves pet data to JSON file
-func SavePetData(filename string, petData pet.Tamagotchi) error {
+func SavePetData(petData pet.Tamagotchi) error {
 	var loadedPetData map[string]pet.Tamagotchi
 
-	file, err := os.ReadFile(filename)
+	dataPath, err := getFilePath()
+	if err != nil {
+		return err
+	}
+
+	file, err := os.ReadFile(dataPath)
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return err
@@ -70,10 +86,19 @@ func SavePetData(filename string, petData pet.Tamagotchi) error {
 	}
 
 	// Write the updated pet data to the file
-	err = os.WriteFile(filename, writeData, os.ModePerm)
+	err = os.WriteFile(dataPath, writeData, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func getFilePath() (string, error) {
+	exePath, err := os.Executable()
+	if err != nil {
+		return "", err
+	}
+	exeDir := filepath.Dir(exePath)
+	return filepath.Join(exeDir, "data/pets.json"), nil
 }

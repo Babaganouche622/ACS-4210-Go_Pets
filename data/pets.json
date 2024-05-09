@@ -1,13 +1,13 @@
 {
-  "Andrew": {
-    "Name": "Andrew",
-    "Happiness": 90,
-    "CurrentHealth": 25,
+  "Brian": {
+    "Name": "Brian",
+    "Happiness": 100,
+    "CurrentHealth": 100,
     "MaxHealth": 100,
     "Attack": 20,
-    "Dirty": 60,
-    "PoopState": 1,
-    "Hunger": 90,
+    "Dirty": 20,
+    "PoopState": 0,
+    "Hunger": 0,
     "Age": 0
   },
   "Bubbles": {

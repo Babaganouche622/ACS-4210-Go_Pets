@@ -39,7 +39,7 @@ func StartGame() {
 		case "1":
 			for petName == "" {
 				fmt.Println(colour.Yellow + "\nWhich pet would you like to load?" + colour.Reset)
-				allPets, err := storage.GetAllPetData("data/pets.json")
+				allPets, err := storage.GetAllPetData()
 				if err != nil {
 					fmt.Println(colour.Red+"Failed to load pet data:"+colour.Reset, err)
 					petName = ""
@@ -49,7 +49,7 @@ func StartGame() {
 				}
 				petName, _ = reader.ReadString('\n')
 				petName = strings.TrimSpace(petName)
-				petData, err := storage.LoadPetData("data/pets.json", petName)
+				petData, err := storage.LoadPetData(petName)
 				if err != nil {
 					fmt.Println(colour.Red+"Failed to load pet data:"+colour.Reset, err)
 					petName = ""
@@ -77,7 +77,7 @@ func StartGame() {
 			fmt.Println(colour.Yellow + "What would you like to name your egg?" + colour.Reset)
 			eggName, _ = reader.ReadString('\n')
 			eggName = strings.TrimSpace(eggName)
-			_, err = storage.LoadPetData("data/pets.json", eggName)
+			_, err = storage.LoadPetData(eggName)
 			if err == nil {
 				fmt.Println(colour.Orange + "A pet with this name already exists. Please choose another name." + colour.Reset)
 				eggName = ""
@@ -159,7 +159,7 @@ func StartGame() {
 			reader.ReadString('\n')
 		case "6":
 			// Save the pet data to the pets.json file
-			storage.SavePetData("data/pets.json", userPet)
+			storage.SavePetData(userPet)
 			fmt.Println(colour.Green + "Pet saved." + colour.Reset)
 		case "7":
 			fmt.Println(colour.Green + "Goodbye!" + colour.Reset)

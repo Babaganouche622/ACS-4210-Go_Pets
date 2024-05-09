@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -32,7 +33,20 @@ var weather Weather
 
 // InitWeather should initialize the weather object by calling the weather API
 func InitWeather() string {
-	err := godotenv.Load()
+	// Get the path to the directory containing the executable.
+	exePath, err := os.Executable()
+	if err != nil {
+		fmt.Println("Error getting executable path:", err)
+		return ""
+	}
+	exeDir := filepath.Dir(exePath)
+
+	// Construct the path to the .env file.
+	envPath := filepath.Join(exeDir, ".env")
+	// Construct the path to the weather.json file.
+	weatherPath := filepath.Join(exeDir, "weather/weather.json")
+
+	err = godotenv.Load(envPath)
 	if err != nil {
 		fmt.Println("Error loading .env file")
 		return ""
@@ -66,7 +80,7 @@ func InitWeather() string {
 	fullURL := fmt.Sprintf("%sq=%s,%s&appid=%s&units=metric", baseURL, city, countryCode, apiKey)
 
 	// Load the weather data from a file
-	file, err := os.ReadFile("weather/weather.json")
+	file, err := os.ReadFile(weatherPath)
 	if err != nil {
 		fmt.Println("Error reading weather file:", err)
 		return ""
@@ -122,8 +136,19 @@ func GetWeather() string {
 }
 
 func saveWeather() {
+	// Get the path to the directory containing the executable.
+	exePath, err := os.Executable()
+	if err != nil {
+		fmt.Println("Error getting executable path:", err)
+		return
+	}
+	exeDir := filepath.Dir(exePath)
+
+	// Construct the path to the weather.json file.
+	weatherPath := filepath.Join(exeDir, "weather", "weather.json")
+
 	// Save the weather data to a file
-	file, err := os.Create("weather/weather.json")
+	file, err := os.Create(weatherPath)
 	if err != nil {
 		fmt.Println("Error creating weather file:", err)
 		return
